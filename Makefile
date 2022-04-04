@@ -22,19 +22,19 @@ endif
 
 
 # This directory things
-INC_DIRS := -I. -I./external -I./src -I$(LOG4CXX_INCLUDE) -I$(ACTIVEMQ_INCLUDE) -I$(APR_INCLUDE)
+INC_DIRS := -I. -I./external -I./src -I$(LOG4CXX_INCLUDE) -I$(ACTIVEMQ_INCLUDE) -I$(APR_INCLUDE) -I$(EPICS_INC) -I$(FITSIO_INC)
 
 # Directory for libraries
-LIB_DIRS := -L$(LOG4CXX_LIB) -L$(ACTIVEMQ_LIB) -L$(APR_LIB)
+LIB_DIRS := -L$(LOG4CXX_LIB) -L$(ACTIVEMQ_LIB) -L$(FITSIO_LIB) -L$(APR_LIB) -L$(EPICS_LIB)
 
 # Libraries
-LIBS := -llog4cxx -lactivemq-cpp -lapr-1
+LIBS := -llog4cxx -lactivemq-cpp -lcfitsio -lapr-1
 
 # Sub-directories
 SUBDIRS :=  test
 
 # All Target
-all: libgiapi-glue-cc
+all: install 
 
 # Test target
 test: libgiapi-glue-cc

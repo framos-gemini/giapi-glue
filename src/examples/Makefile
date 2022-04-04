@@ -2,17 +2,20 @@
 -include ../../conf/config.mk
 -include ../../conf/common.mk
 
-INC_DIRS= -I../../ -I../ -I$(ACTIVEMQ_INCLUDE) -I$(APR_INCLUDE) -I$(LOG4CXX_INCLUDE) -I$(CURLPP_INCLUDE)
+INC_DIRS= -I../../ -I../ -I$(ACTIVEMQ_INCLUDE) -I$(APR_INCLUDE) -I$(LOG4CXX_INCLUDE) -I$(CURLPP_INCLUDE) -I$(FITSIO_INC) -I$(EPICS_INC)
 
-LIB_DIRS= -L../../ -L$(ACTIVEMQ_LIB) -L$(LOG4CXX_LIB) -L$(APR_LIB) -L$(CURLPP_LIB)
+LIB_DIRS= -L../../ -L$(ACTIVEMQ_LIB) -L$(LOG4CXX_LIB) -L$(APR_LIB) -L$(CURLPP_LIB) -L$(FITSIO_LIB) -L$(EPICS_LIB)
 
-LIBS= -lgiapi-glue-cc -lactivemq-cpp -llog4cxx -lapr-1 -lcurlpp -lcurl
+LIBS= -lgiapi-glue-cc -lactivemq-cpp -llog4cxx -lapr-1 -lcurlpp -lcurl -lcfitsio -lCom -lpvAccessIOC -ldbRecStd -ldbCore -lca -lpvAccessCA -lpvAccess -lpvData -lpvDatabase -lnt
 
 LD_LIBRARY_PATH := ../../:$(LOG4CXX_LIB):$(CPPUNIT_LIB):$(ACTIVEMQ_LIB):$(APR_LIB):$(CURLPP_LIB)
 
-all: seq-command tcscontext pcsupdater obsevent epicssubscription epicsget logging fileevents status services apply-command any-command observe-simulator 
+all: stresstest seq-command tcscontext pcsupdater obsevent epicssubscription epicsget logging fileevents status services apply-command any-command observe-simulator gpim1zernikes engineering pvimagetest
 
 seq-command: seq-command.o
+
+pvimagetest: pvimagetest.o
+	$(CXX) $(LIB_DIRS) $(LIBS) -o $@  $<
 
 tcscontext: tcscontext.o
 	$(CXX) $(LIB_DIRS) $(LIBS) -o $@  $<
@@ -71,7 +74,7 @@ epicssubscription: epicssubscription.o EpicsHandlerDemo.o
 %.o: %.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking $(OS) C++ Compiler'
-	$(CXX) $(INC_DIRS) -g -O0 -Wall -fPIC -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
+	$(CXX) $(INC_DIRS) -std=c++11 -g -O0 -Wall -fPIC -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -83,4 +86,4 @@ run:
 
 
 clean: 
-	-$(RM) *.o *.d stresstest seq-command pcsupdater tcscontext obsevent epicssubscription pcsupdater logging fileevents status services apply-command any-command obsacq gpim1zernikes gpisimulator gpiobssimulator engineering
+	-$(RM) *.o *.d stresstest seq-command pcsupdater tcscontext obsevent epicssubscription pcsupdater logging fileevents status services apply-command any-command obsacq gpim1zernikes gpisimulator gpiobssimulator engineering pvimagetest

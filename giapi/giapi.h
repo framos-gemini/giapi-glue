@@ -225,6 +225,7 @@ namespace giapi {
 	 * in the GIAPI using the GiapiUtil class.
 	 */
 	typedef void (*giapi_error_handler)(void);
+  
 }
 
 

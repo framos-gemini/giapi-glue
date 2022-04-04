@@ -39,6 +39,14 @@ LOG4CXX_BASE := $(EXTERNAL_LIB)/log4cxx
 LOG4CXX_INCLUDE := $(LOG4CXX_BASE)/include
 LOG4CXX_LIB := $(LOG4CXX_BASE)/lib
 
+#EPICS stuff
+EPICS_INC := $(EPICS_BASE)/include -I$(EPICS_BASE)/include/os/Linux -I$(EPICS_BASE)/include/compiler/gcc
+EPICS_LIB := $(EPICS_BASE)/lib.linux-x86_64
+
+#FITSIO stuff
+FITSIO_INC := /usr/include/cfitsio
+FITSIO_LIB := /usr/lib64
+
 #CPPUnit stuff
 CPPUNIT_BASE := $(EXTERNAL_LIB)/cppunit
 CPPUNIT_INCLUDE := $(CPPUNIT_BASE)/include
@@ -74,6 +82,6 @@ TMP_DIST_DIR := /tmp/$(DIST_PACKAGE_NAME)
 %.o: %.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking $(OS) C++ Compiler'
-	$(CXX) $(INC_DIRS) -g -O0 -Wall -fPIC -c -Wno-deprecated -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
+	$(CXX) $(INC_DIRS) -std=c++11 -g -O0 -Wall -fPIC -c -Wno-deprecated -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '

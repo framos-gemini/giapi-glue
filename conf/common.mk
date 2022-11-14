@@ -56,6 +56,12 @@ APR_BASE:=$(EXTERNAL_LIB)/apr
 APR_INCLUDE:= $(APR_BASE)/include/apr-1
 APR_LIB:=$(APR_BASE)/lib
 
+#CURL
+CURL_BASE:=$(EXTERNAL_LIB)/libcurl
+CURL_INCLUDE:= $(CURL_BASE)/include/
+CURL_LIB:=$(CURL_BASE)/lib
+
+
 #cURLpp
 CURLPP_BASE:=$(EXTERNAL_LIB)/curlpp
 CURLPP_INCLUDE:= $(CURLPP_BASE)/include/
@@ -74,6 +80,6 @@ TMP_DIST_DIR := /tmp/$(DIST_PACKAGE_NAME)
 %.o: %.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking $(OS) C++ Compiler'
-	$(CXX) $(INC_DIRS) -g -O0 -Wall -fPIC -c -Wno-deprecated -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
+	$(CXX) $(INC_DIRS) -std=c++11 -g -O0 -Wall -fPIC -c -Wno-deprecated -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '

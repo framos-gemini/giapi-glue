@@ -14,6 +14,7 @@ using namespace std;
 
 namespace instDummy {
 
+   // This pointer function will be the python function callback which will be called when a subscribed command is received. 
    typedef DataResponse (*callback_def)(giapi::command::ActionId, giapi::command::SequenceCommand, giapi::command::Activity, giapi::pConfiguration);
 
    class InstCmdHandler: public giapi::SequenceCommandHandler {
@@ -40,11 +41,7 @@ namespace instDummy {
 					cout << "{" << *it << " : " << config->getValue(*it) << "}" << std::endl;
 				}
 			}
-			// It is a continue command. Is there to verify if the CONTINUE cmd its Action Id will be the Observe id.
-			// Hay dos aproximaciones, cuando se comanda el Observe despues del primer nodding A, el instrument controller
-			// envia un WAITING con el ID del Observ, por lo tanto, el cotinue deberia de enviar el mismo ID.
-			// Otra solucion es crear un nuevo comando llamado OBSSERVE_NOD y y cuando se termine el punto (A o B)
-			// se envie un END_NOD.
+			
 			switch (sequenceCommand)
 			{
 				case (giapi::command::REBOOT):

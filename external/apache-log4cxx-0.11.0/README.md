@@ -1,5 +1,5 @@
 # Overview
-It is possible to compile this library on centos 7 and rocky 8. However, depending on the linux platform you have to execute different actions or commands. 
+This is the stepst that GEMINI uses to compile this library on centos 7 and rocky 8. However, depending on the linux platform you have to execute different actions or commands. 
 
 # Configure and Build
 

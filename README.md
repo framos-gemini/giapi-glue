@@ -33,31 +33,45 @@ The following are tools used to build the GIAPI C++ API:
 |GNU automake | 1.16.1   | 1.16.1 |
 |cmake        | 2.8.12.2 | 3.20.2 |
 
-# Binary distribution
-
-
 # External libraries
 The external libraries required by the GIAPI are:
-* Apache Active MQ CMS (C++ Messaging system) version 3.4.1. [link](external/activemq-cpp-library-3.4.1)
-* Apache Log4cxx version 0.11.0. [link](external/apache-log4cxx-0.11.0) 
-* Apache Portable Runtime Library version 1.3.12. [link](external/apache-log4cxx-0.11.0) 
-* libCurl version 7.21.6. [link](external/curl-7.21.6) 
-* curlpp version 0.8.1 [link](external/curlpp-0.8.1) 
+* Apache Active MQ CMS (C++ Messaging system) version 3.4.1. [activemq](external/activemq-cpp-library-3.4.1)
+* Apache Log4cxx version 0.11.0. [log4cxx](external/apache-log4cxx-0.11.0) 
+* libCurl version 7.21.6. [curl](external/curl-7.21.6) 
+* curlpp version 0.8.1 [curlpp](external/curlpp-0.8.1) 
+* Apache Portable Runtime libraries (apr and apr-util). [apr](external/apr-1.3.12) and  [apr-util](external/apr-util-1.3.10)
 
-## Compile libraries.
-### RPM distribution
-Compiled versions of these libraries are available in the distribution
-package of the GIAPI (under the 'lib' directory) or as RPM packages
-following the Gemini RPM framework.
+## Compile GIAPI-GLUE.
 ### Manual compilation
-It is possible compile each of the GIAPI external libraries (described in 
-the External libraries point) from their source code.  However, each of 
-the commands used by Gemini on its Centos 7 and 
-Rocky 8 will be listed bellow.
+To compile GIAPI-GLUE from source code, it is necessary to first compile the external libraries 
+located in the external directory. 
 
+The steps performed from GEMINI to compile the library on CENTOS 7 and CENTOS 8 are described below. 
+
+* Create the GIAPI_ROOT and BOOST_ROOT enviroment variables. It is possible executing the following command.
+   ```
+      source ./defineGiapiglueEnv.sh
+   ```
+* Compile the apr library. Follow the actions listed in [link](external/apr-1.3.12)
+* Compile the apr-util library. Follow the actions listed in this [link](external/apr-util-1.3.10)
+* Compile the activemq library. Follow the actions listed in this [link](external/activemq-cpp-library-3.4.1) 
+* Compile the log4cxx library. Follow the actions listed in this [link](external/apache-log4cxx-0.11.0) 
+* Compile the libCurl library. Follow the actions listed in this [link](external/curl-7.21.6) 
+* Compile the libCurlpp library. Follow the actions listed in this [link](external/curlpp-0.8.1)
+* Compile the giapi-glue library. Execute the following commands.
+  ```
+  > cd $GIAPI_ROOT
+  > make 
+  > make install
+  ``` 
+* Finally, if you want to execute some examples provided by GEMINI, perform the following actions. 
+  ```
+  cd $GIAPI_ROOT/src/examples
+  > make
+  ```
 
 
 # History
 The first version of the giapi-glue dates from October 24, 2008. It was written by AN (Arturo Nunez). 
-During these years it has been maintained mainly by Carlos Quiroz and Ignacio Arriagada. 
+During these years it has been maintained mainly by Carlos Quiroz, Ignacio Arriagada and Fran. Ramos. . 
 

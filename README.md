@@ -42,7 +42,6 @@ The external libraries required by the GIAPI are:
 * Apache Portable Runtime libraries (apr and apr-util). [apr](external/apr-1.3.12) and  [apr-util](external/apr-util-1.3.10)
 
 ## Compile GIAPI-GLUE.
-### Manual compilation
 To compile GIAPI-GLUE from source code, it is necessary to first compile the external libraries 
 located in the external directory. 
 

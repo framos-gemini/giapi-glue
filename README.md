@@ -43,7 +43,7 @@ The external libraries required by the GIAPI are:
    <li> Apache Log4cxx version 0.11.0. [link](external/apache-log4cxx-0.11.0/README.md) </li>
    <li> Apache Portable Runtime Library version 1.3.12. [link](external) </li>
    <li> libCurl version 7.21.6. [link](external/curl-7.21.6/README.md) </li>
-   <li> curlpp version 0.8.1 [link](tree/c%2B%2B11_Release/external/curlpp-0.8.1/README.md) </li>
+   <li> curlpp version 0.8.1 [link](https://github.com/framos-gemini/giapi-glue/blob/c%2B%2B11_Release/external/curlpp-0.8.1/README.md) </li>
 </ol>
 
 ## Compile libraries.

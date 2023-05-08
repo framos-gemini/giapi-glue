@@ -35,20 +35,15 @@ The following are tools used to build the GIAPI C++ API:
 
 # Binary distribution
 
-The headers to access the GIAPI C++ interface are in the include directory. The
-library shared object is in the lib directory of the binary distribution. In
-addition, the GIAPI is distributed also as RPM packages. Following the Gemini
-RPM framework, in that case headers are under /gemsoft/include and the
-shared object library is installed at /gemsoft/lib
 
 # External libraries
 The external libraries required by the GIAPI are:
 <ol>
-   <li> Apache Active MQ CMS (C++ Messaging system) version 3.4.1. [link](external/activemq-cpp-library-3.4.1/README.md)</li>
+   <li> Apache Active MQ CMS (C++ Messaging system) version 3.4.1. [link]()</li>
    <li> Apache Log4cxx version 0.11.0. [link](external/apache-log4cxx-0.11.0/README.md) </li>
    <li> Apache Portable Runtime Library version 1.3.12. [link](external) </li>
    <li> libCurl version 7.21.6. [link](external/curl-7.21.6/README.md) </li>
-   <li> curlpp version 0.8.1 [link](external/curlpp-0.8.1/README.md) </li>
+   <li> curlpp version 0.8.1 [link](tree/c%2B%2B11_Release/external/curlpp-0.8.1/README.md) </li>
 </ol>
 
 ## Compile libraries.

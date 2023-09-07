@@ -212,6 +212,11 @@ namespace giapi {
 		} po;
 		double ao2t[6]; //Optical distortion coefficients (Not used to date)
 	};
+	enum OffsetType {
+		ACQ,
+		SLOWGUIDING
+	};
+
 	/**
 	 * Definition of a long with 64 bits. Since 64-bit signed integers are
 	 * not part of the ANSI C++ standard, this definition is compiler

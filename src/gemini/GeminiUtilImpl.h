@@ -9,6 +9,7 @@
 #include <gemini/epics/EpicsFetcher.h>
 #include <gemini/pcs/PcsUpdater.h>
 #include <gemini/tcs/TcsFetcher.h>
+#include "tcs/ApplyOffset.h"
 
 namespace giapi {
 
@@ -35,6 +36,8 @@ public:
 	int postPcsUpdate(double zernikes[], int size);
 
 	int getTcsContext(TcsContext& ctx, long timeout) const throw (GiapiException);
+	int tcsApplyOffset(const double p, const double q,
+			           const OffsetType offsetType, const long timeout)const throw (GiapiException);
 
 	pEpicsStatusItem getChannel(const std::string &name, long timeout) throw (GiapiException);
 
@@ -56,6 +59,8 @@ private:
 	 * The TCS fetcher object
 	 */
 	gemini::tcs::pTcsFetcher _tcsFetcher;
+
+        gemini::tcs::pTcsOffset     _tcsApplyOffset;
 
 	/**
 	 * The EPICS fetcher object

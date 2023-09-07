@@ -87,6 +87,9 @@ public:
 	 */
 	static int getTcsContext(TcsContext& ctx, long timeout) throw (GiapiException);
 
+
+	static int tcsApplyOffset(const double p, const double q, const OffsetType offsetType, const long timeout) throw (GiapiException);
+
 	/**
 	 * Provides a pointer to an EpicsStatus item containing the latest channel
 	 * information available

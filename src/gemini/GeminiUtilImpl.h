@@ -36,8 +36,13 @@ public:
 	int postPcsUpdate(double zernikes[], int size);
 
 	int getTcsContext(TcsContext& ctx, long timeout) const throw (GiapiException);
+
 	int tcsApplyOffset(const double p, const double q,
 			           const OffsetType offsetType, const long timeout)const throw (GiapiException);
+
+	int tcsApplyOffset(const double p, const double q,
+		               const OffsetType offsetType, const long timeout,
+		               void (*callbackOffset)(int, std::string)) const throw (GiapiException);
 
 	pEpicsStatusItem getChannel(const std::string &name, long timeout) throw (GiapiException);
 

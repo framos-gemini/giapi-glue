@@ -39,6 +39,10 @@ public:
 	virtual int sendOffset(const double p, const double q,
 			               const OffsetType offsetType, const long timeout) throw (GiapiException) = 0;
 
+	virtual int sendOffset(const double p, const double q,
+	                       const OffsetType offsetType, const long timeout,
+	                       void (*callbackOffset)(int, std::string)) throw (GiapiException) = 0;
+
 	/**
 	 * Destructor
 	 */

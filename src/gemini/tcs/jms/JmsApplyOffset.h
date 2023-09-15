@@ -29,7 +29,14 @@ public:
 	int sendOffset(const double p, const double q,
 				   const OffsetType offsetType, const long timeout) throw (CommunicationException, TimeoutException);
 
+	int sendOffset(const double p, const double q,
+		           const OffsetType offsetType, const long timeout,
+		           void (*callbackOffset)(int, std::string)) throw (CommunicationException, TimeoutException);
+
+	static void callback(void (*callbackOffset)(int, std::string), MessageConsumer *tmpConsumer, TemporaryQueue * tmpQueue, int timeout);
+
 	virtual ~JmsApplyOffset();
+
 
 private:
 	JmsApplyOffset() throw (CommunicationException);

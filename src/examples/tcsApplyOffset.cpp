@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
 		cout << "Starting TCS Apply Offset Example " << endl;
 		cout << "Offset to apply.  p: "<< p << " q: "<< q << " offsetType: "<< offsetType << endl;
                 auto start = std::chrono::system_clock::now();
-		int status = GeminiUtil::tcsApplyOffset(p,q, offsetType, 0);
+		int status = GeminiUtil::tcsApplyOffset(p,q, offsetType, 10000);
                 // Some computation here
                 auto end = std::chrono::system_clock::now();
                 std::chrono::duration<double> elapsed_seconds = end-start;
@@ -52,7 +52,8 @@ int main(int argc, char **argv) {
 		cout<<"Was the TCS OFFSET applied: " << (status == 1) << endl;
 
 	} catch (GiapiException &e) {
-		cerr << "Is the GMP up?" << endl;
+		cout << "exceptionnnn " << endl;
+		cerr << e.what() << endl;
 	}
 	return 0;
 }

@@ -67,6 +67,13 @@ int GeminiUtilImpl::tcsApplyOffset(const double p, const double q,
 		                           const OffsetType offsetType, const long timeout)const throw (GiapiException) {
 	return _tcsApplyOffset->sendOffset(p, q, offsetType,timeout);
 }
+
+int GeminiUtilImpl::tcsApplyOffset(const double p, const double q,
+                                   const OffsetType offsetType, const long timeout,
+                                   void (*callbackOffset)(int, std::string))const throw (GiapiException) {
+	return _tcsApplyOffset->sendOffset(p, q, offsetType, timeout, callbackOffset );
+}
+
 pEpicsStatusItem GeminiUtilImpl::getChannel(const std::string &name, long timeout) throw (GiapiException)  {
 	std::cout << "Destroying " << std::endl;
 	return _epicsFetcher->getChannel(name, timeout);

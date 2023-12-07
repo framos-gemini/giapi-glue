@@ -28,9 +28,9 @@ namespace instDummy {
 	public:
 
 		virtual giapi::pHandlerResponse handle(giapi::command::ActionId id,
-											   giapi::command::SequenceCommand sequenceCommand,
-											   giapi::command::Activity activity,
-											   giapi::pConfiguration config) {
+						       giapi::command::SequenceCommand sequenceCommand,
+						       giapi::command::Activity activity,
+						       giapi::pConfiguration config) {
 
 			//decaf::util::concurrent::CountDownLatch lock(1);
 			if (config != NULL) {

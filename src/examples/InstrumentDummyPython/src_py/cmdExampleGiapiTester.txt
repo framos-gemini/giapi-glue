@@ -1,0 +1,20 @@
+# This file has some examples about how to execute the giapi-tester commands to use the InstrumentDummy 
+# Before executing any command, you have to set the JAVA_HOME variable. 
+#     export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+
+# Init command
+java -jar giapi-tester.jar -sc INIT -activity START
+
+# STOP command. 
+java -jar giapi-tester.jar -sc STOP -activity START
+
+# DATUM command
+java -jar giapi-tester.jar -sc DATUM -activity START
+
+# Apply command. This command set the detector controller to RAMP mode, select the filter wheel to U and the exposure time to 20 seconds. 
+java -jar giapi-tester.jar -sc APPLY -activity START -config instdummy:cc:FW1.setfilter=U -config instdummy:dc:DC1.detmode=RAMP -config instdummy:dc:DC1.exptime=20 
+
+# Observe command where the DataLabel is tests.fits. Note that the DATA_LABEL is the fits file name which will be generated. 
+java -jar giapi-tester.jar -sc OBSERVE -activity START -config DATA_LABEL=test.fits
+
+

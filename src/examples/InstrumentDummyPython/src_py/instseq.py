@@ -138,7 +138,7 @@ class InstSeq():
         if activity == giapi.command.Activity.PRESET:
             return giapi.HandlerResponse.ACCEPTED
         self.mngGIAPIres.insertNewActionID(actID, FW1, t, 40*ONESEC)
-        self.qFilter.put(CmdOrder(actID, FilterCmd.DATUM, [], FW1), None)
+        self.qFilter.put(CmdOrder(actID, FilterCmd.DATUM, [], FW1, None))
         return giapi.HandlerResponse.STARTED
     
     # pylint: disable=C0103 R0913
@@ -165,7 +165,6 @@ class InstSeq():
             if len(lkey) > 1 and lkey[0] != INSTSEQNAME and \
                 lkey[1] != CC_STR  and lkey[1] != DC_STR:
                raise ApplyFormatError('Check the number of parameter (at least exptime) or the component name of the command')
-            
             lComp = lkey[2].split('.')
    
             match lComp[1]:
@@ -193,7 +192,6 @@ class InstSeq():
             return giapi.HandlerResponse.ACCEPTED
         
         dCmdOrder = { DC1 : {}, FW1 : {} }
-        
         self.__fromApplyParamsGetCmdOrders(config, dCmdOrder, actID) 
         # pylint: disable=C0206
         for key in dCmdOrder:
@@ -248,6 +246,7 @@ class InstSeq():
         # pylint: disable=W0718
         except Exception as e:
             self.logger.error(str(e))
+            print(traceback.format_exc())
             return instDummy.DataResponse(giapi.HandlerResponse.ERROR, str(e))    
 
         return instDummy.DataResponse(res, "Processed")

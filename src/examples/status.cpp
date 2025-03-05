@@ -13,6 +13,8 @@
 #include <giapi/StatusUtil.h>
 #include <giapi/GiapiUtil.h>
 #include <src/util/TimeUtil.h>
+#include <chrono>
+#include <thread>
 
 using namespace giapi;
 
@@ -37,15 +39,20 @@ int main(int argc, char **argv) {
 
 		decaf::util::concurrent::CountDownLatch lock(1);
 
-		StatusUtil::createStatusItem("gpi:status1", type::INT);
+		StatusUtil::createStatusItem("gmp:status1", type::INT);
 
-		StatusUtil::createStatusItem("gpi:status2", type::INT);
-
+		StatusUtil::createStatusItem("gmp:status2", type::INT);
+		StatusUtil::createStatusItem("gmp:instdummy:sad:FW1.filterpos", type::FLOAT);
+                float nFloat = 5.0;
         timer.startTimer();
 		for (int i = 0; i < nReps; i++) {
-			StatusUtil::setValueAsInt("gpi:status1", i);
-			StatusUtil::setValueAsInt("gpi:status2", nReps-i);
+			std::cout<<"value: "<< i << std::endl;
+			StatusUtil::setValueAsInt("gmp:status1", i);
+			StatusUtil::setValueAsInt("gmp:status2", nReps-i);
+			StatusUtil::setValueAsFloat("gmp:instdummy:sad:FW1.filterpos", nFloat++);
 			StatusUtil::postStatus();
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		}
         timer.stopTimer();
     	time = timer.getElapsedTime(util::TimeUtil::MSEC)/1000.0;

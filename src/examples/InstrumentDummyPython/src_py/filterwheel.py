@@ -9,6 +9,7 @@ Created on Mon Apr  1 20:41:42 2024
 from multiprocessing import  Process
 import os
 import time
+import traceback
 from enum import Enum
 import random
 import threading
@@ -23,6 +24,7 @@ cppyy.include("giapi/GeminiUtil.h")
 cppyy.include("giapi/GiapiUtil.h")
 cppyy.include("giapi/EpicsStatusHandler.h")
 cppyy.include("giapi/GiapiUtil.h")
+cppyy.include("giapi/StatusUtil.h")
 cppyy.load_library("libgiapi-glue-cc")
 cppyy.add_include_path(f"{giapi_root}/src/examples/InstrumentDummyPython")
 #pylint: disable=C0413 E0401
@@ -69,6 +71,14 @@ class FilterWheel(Process):
                              POSITION     : random.randint(0,360),
                              MODE         : FilterMode.JOG}
         self.mngCmdExec   = MngCmdExecution()
+        self.createAndInitStatusItems();
+
+    def createAndInitStatusItems(self):
+        giapi.StatusUtil.createStatusItem(FILTERPOS_GIAPI, giapi.type.Type.FLOAT)
+        self.status[POSITION] = -999999.0 # this is a not logical value for the filter wheel position
+        giapi.StatusUtil.setValueAsFloat(FILTERPOS_GIAPI, self.status[POSITION])
+        giapi.StatusUtil.postStatus()
+
     
 
     ##############################################################
@@ -93,12 +103,7 @@ class FilterWheel(Process):
     ##############################################################
 
     def initCmd(self, cmdOrder):
-       if not self.__setMovAction(cmdOrder.actionID):
-          self.qResp.put(ActResponse(cmdOrder.actionID,
-                                     self.idName, 
-                                     RESPONSE.ERROR, 
-                                     f'The {self.idName} Fiter Wheel is busy'))       
-       else:   
+          self.__stopAnyActions()
           self.status[ENABLE] = True
           stopDatum = self.mngCmdExec.getStopEvent(FilterCmd.DATUM)
           self.__datumAction(stopDatum)
@@ -175,11 +180,12 @@ class FilterWheel(Process):
                self.qResp.put(ActResponse(cmdOrder.actionID,
                                           self.idName,
                                           RESPONSE.ERROR,
-                                          "Not destination position provedided"))
+                                          "Wrong fiter name provided. The uvailable filters are U, G, I or Z"))
+               self.__removeMoveAct()
     
     ##############################################################   
 
-    def stopCmd(self, cmdOrder):
+    def __stopAnyActions(self):
        if self.__isMovving():
            self.mngCmdExec.getStopEvent(FilterCmd.DATUM).set()
            self.mngCmdExec.getStopEvent(FilterCmd.INIT).set()
@@ -187,6 +193,9 @@ class FilterWheel(Process):
            self.mngCmdExec.getStopEvent(FilterCmd.PARK).set()
        
        self.__removeMoveAct()
+
+    def stopCmd(self, cmdOrder):
+       self.__stopAnyActions()
        self.qResp.put(ActResponse(cmdOrder.actionID, self.idName, RESPONSE.COMPLETED, ""))
     
     ##############################################################   
@@ -267,7 +276,6 @@ class FilterWheel(Process):
     
     # pylint: disable=C0103
     def __isMovving(self):
-        
         if  not self.mngCmdExec.isActive(FilterCmd.DATUM) and \
             not self.mngCmdExec.isActive(FilterCmd.MOVE) and \
             not self.mngCmdExec.isActive(FilterCmd.INIT) and \
@@ -297,7 +305,6 @@ class FilterWheel(Process):
     
     def sendTelescopeStatus(self):
         # Create the status Item firs as it was described in the GIAPIc++ICD50, section 4.2
-        giapi.StatusUtil.createStatusItem("gmp:instdummy:sad:FW1.filterpos", giapi.type.Type.FLOAT)
         while True:
             giapi.StatusUtil.setValueAsFloat(FILTERPOS_GIAPI, self.status[POSITION])
             self.logger.debug(f'Sending the position: {self.status[POSITION]}')

@@ -7,8 +7,6 @@
 #include <giapi/giapiexcept.h>
 
 #include <stdexcept>
-//Required for exception handling
-
 namespace giapi {
 
 /**

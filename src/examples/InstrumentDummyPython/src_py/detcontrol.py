@@ -290,6 +290,9 @@ class DetectControl(Process):
     def __stopAction(self):
         if self.detectorBusy:
             self.stop = True
+            while self.detectorBusy:
+               time.sleep(0.5)
+            
             self.logger.debug('All the process stopped') 
         self.stop = False
            

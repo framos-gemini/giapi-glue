@@ -104,6 +104,7 @@ class FilterWheel(Process):
 
     def initCmd(self, cmdOrder):
           self.__stopAnyActions()
+          self.__setMovAction(cmdOrder.actionID)
           self.status[ENABLE] = True
           stopDatum = self.mngCmdExec.getStopEvent(FilterCmd.DATUM)
           self.__datumAction(stopDatum)

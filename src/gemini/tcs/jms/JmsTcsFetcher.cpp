@@ -22,20 +22,20 @@ namespace giapi {
             int const JmsTcsFetcher::TCS_CTX_SIZE = 39;
             
             JmsTcsFetcher::JmsTcsFetcher() noexcept(false) :
-			//Fixed for exception handling in the C++20 version.
+			
             	JmsProducer(GMPKeys::GMP_TCS_CONTEXT_DESTINATION) {
             
             }
             
             pTcsFetcher JmsTcsFetcher::create() noexcept(false) {
-				//Fixed for exception handling in the C++20 version.
+				
             	pTcsFetcher fetcher(new JmsTcsFetcher());
             	return fetcher;
             }
             
             int JmsTcsFetcher::fetch(TcsContext & ctx, long timeout)
             		noexcept(false) {
-						//Fixed for exception handling in the C++20 version.
+						
             
             	Message * request = NULL;
             	try {
@@ -79,7 +79,7 @@ namespace giapi {
             
             int JmsTcsFetcher::_buildTcsContext(TcsContext &ctx, Message *message)
             		noexcept(false) {
-						//Fixed for exception handling in the C++20 version.
+						
             
             	const BytesMessage* bytesMessage =
             			dynamic_cast<const BytesMessage*> (message);

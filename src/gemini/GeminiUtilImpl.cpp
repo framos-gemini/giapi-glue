@@ -5,6 +5,11 @@
 #include <gemini/tcs/jms/JmsTcsFetcher.h>
 #include <gemini/tcs/jms/JmsApplyOffset.h>
 #include <gemini/epics/jms/JmsEpicsFetcher.h>
+#include <gemini/fitsFileImage/jms/JmsFitsSender.h>
+#include <gemini/fitsFileImage/jms/JmsFitsReceiver.h>
+#include <gmp/ConnectionManager.h>
+#include <gmp/GMPKeys.h>
+#include <log4cxx/logger.h>
 
 namespace giapi {
 
@@ -13,12 +18,14 @@ log4cxx::LoggerPtr GeminiUtilImpl::logger(log4cxx::Logger::getLogger("giapi.Gemi
 pGeminiUtilImpl GeminiUtilImpl::INSTANCE(static_cast<GeminiUtilImpl *>(0));
 
 GeminiUtilImpl::GeminiUtilImpl() noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	_epicsMgr = JmsEpicsManager::create();
 	_pcsUpdater = gemini::pcs::jms::JmsPcsUpdater::create();
 	_tcsFetcher = gemini::tcs::jms::JmsTcsFetcher::create();
-         _tcsApplyOffset = gemini::tcs::jms::JmsApplyOffset::create();
+    _tcsApplyOffset = gemini::tcs::jms::JmsApplyOffset::create();
 	_epicsFetcher = gemini::epics::JmsEpicsFetcher::create();
+	_fitsSender = gemini::fitsFileImage::jms::JmsFitsSender::create();
+    _fitsReceiver = gemini::fitsFileImage::jms::JmsFitsReceiver::create();
 }
 
 GeminiUtilImpl::~GeminiUtilImpl() {
@@ -27,10 +34,12 @@ GeminiUtilImpl::~GeminiUtilImpl() {
 	_pcsUpdater.reset();
 	_tcsFetcher.reset();
 	_epicsFetcher.reset();
+    _fitsSender.reset();
+    _fitsReceiver.reset();
 }
 
 pGeminiUtilImpl GeminiUtilImpl::Instance() noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	if (INSTANCE.get() == 0) {
 		INSTANCE.reset(new GeminiUtilImpl());
 	}
@@ -39,7 +48,7 @@ pGeminiUtilImpl GeminiUtilImpl::Instance() noexcept(false) {
 
 int GeminiUtilImpl::subscribeEpicsStatus(const std::string &name,
 		pEpicsStatusHandler handler) noexcept(false) {
-			//Fixed for exception handling in the C++20 version.
+			
 	LOG4CXX_INFO(logger, "Subscribe epics status " << name);
 	return _epicsMgr->subscribeEpicsStatus(name, handler);
 }
@@ -63,27 +72,60 @@ int GeminiUtilImpl::postPcsUpdate(double zernikes[], int size) {
 }
 
 int GeminiUtilImpl::getTcsContext(TcsContext& ctx, long timeout) const noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	return _tcsFetcher->fetch(ctx, timeout);
 }
 
 int GeminiUtilImpl::tcsApplyOffset(const double p, const double q,
 		                           const OffsetType offsetType, const long timeout)const noexcept(false) {
-									//Fixed for exception handling in the C++20 version.
+									
 	return _tcsApplyOffset->sendOffset(p, q, offsetType,timeout);
 }
 
 int GeminiUtilImpl::tcsApplyOffset(const double p, const double q,
                                    const OffsetType offsetType, const long timeout,
                                    void (*callbackOffset)(int, std::string))const noexcept(false) {
-									//Fixed for exception handling in the C++20 version.
+									
 	return _tcsApplyOffset->sendOffset(p, q, offsetType, timeout, callbackOffset );
 }
 
 pEpicsStatusItem GeminiUtilImpl::getChannel(const std::string &name, long timeout) noexcept(false)  {
-	//Fixed for exception handling in the C++20 version.
+	
 	std::cout << "Destroying " << std::endl;
 	return _epicsFetcher->getChannel(name, timeout);
+}
+
+int GeminiUtilImpl::sendFitsData(const FitsData& fitsData, const long timeout) const noexcept(false) {
+    try {
+        return _fitsSender->sendFitsData(fitsData, timeout);
+    } catch (const CommunicationException& e) {
+        LOG4CXX_ERROR(logger, "Problem sending FITS data: " << e.what());
+        throw;
+    }
+}
+
+int GeminiUtilImpl::sendFitsData(const FitsData& fitsData, 
+                                const long timeout,
+                                void (*callback)(int, std::string)) const noexcept(false) {
+    try {
+        return _fitsSender->sendFitsData(fitsData, timeout, callback);
+    } catch (const CommunicationException& e) {
+        LOG4CXX_ERROR(logger, "Problem sending FITS data: " << e.what());
+        throw;
+    }
+}
+
+int GeminiUtilImpl::receiveFitsFiles(void (*callback)(const FitsData&)) const noexcept(false) {
+    try {
+        return _fitsReceiver->startReceiving(callback);
+    } catch (const GiapiException& e) {
+        LOG4CXX_ERROR(logger, "Error starting FITS receiver: " << e.what());
+        return status::ERROR;
+    }
+}
+
+void GeminiUtilImpl::stopReceivingFitsFiles() const {
+    _fitsReceiver->stopReceiving();
 }
 
 }

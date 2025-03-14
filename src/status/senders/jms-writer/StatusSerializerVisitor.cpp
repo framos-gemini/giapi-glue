@@ -19,13 +19,13 @@ StatusSerializerVisitor::~StatusSerializerVisitor() {
 
 void StatusSerializerVisitor::visitStatusItem(StatusItem *item)
 		noexcept(false) {
-		//Fixed for exception handling in the C++20 version.
+		
 	writeHeader(BASIC_OFFSET, item);
 }
 
 void StatusSerializerVisitor::visitAlarmItem(AlarmStatusItem * alarm)
 		noexcept(false) {
-		//Fixed for exception handling in the C++20 version.
+		
 	writeHeader(ALARM_OFFSET, alarm);
 
 	alarm::Cause cause = alarm->getCause();
@@ -77,13 +77,13 @@ void StatusSerializerVisitor::visitAlarmItem(AlarmStatusItem * alarm)
 
 void StatusSerializerVisitor::visitHealthItem(HealthStatusItem * item)
 		noexcept(false) {
-		//Fixed for exception handling in the C++20 version.
+		
 	writeHeader(HEALTH_OFFSET, item);
 }
 
 void StatusSerializerVisitor::writeHeader(int offset, StatusItem *item)
 		noexcept(false) {
-		//Fixed for exception handling in the C++20 version.
+		
 
 	const type::Type type = item->getStatusType();
 	std::string value;

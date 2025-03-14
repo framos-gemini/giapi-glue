@@ -74,7 +74,7 @@ public:
 	static pSequenceCommandConsumer create(command::SequenceCommand id,
 			command::ActivitySet activities,
 			pSequenceCommandHandler handler) noexcept(false);
-//Fixed for exception handling in the C++20 version.
+
 	/**
 	 * Static factory to construct a sequence command consumer for
 	 * a given prefix (associated to an APPLY sequence command)
@@ -104,14 +104,14 @@ public:
 	static pSequenceCommandConsumer create(const std::string & prefix,
 			command::ActivitySet activities,
 			pSequenceCommandHandler handler) noexcept(false);
-//Fixed for exception handling in the C++20 version.
+
 	/**
 	 * Destructor. Cleans up all the resources instantiated by this consumer
 	 * @note This function does not throw exceptions. However, if an exception oc>
          * the destructor **must not** propagate it, as destructors should be noexcep>
 	 */
 	virtual ~SequenceCommandConsumer() noexcept;
-//Fixed for exception handling in the C++20 version.
+
 	/**
 	 * Invoked by the JMS whenever a new message is received
 	 * @throw CommunicationException If an issue occurs while processing the message, such as:
@@ -120,7 +120,7 @@ public:
 	 * - Issues with sending the response message.
          */
 	virtual void onMessage(const Message* message) noexcept(false);
-//Fixed for exception handling in the C++20 version.
+
 private:
 	/**
 	 * Constructor. The arguments specify what sequence command and
@@ -146,7 +146,7 @@ private:
 	SequenceCommandConsumer(command::SequenceCommand id,
 			command::ActivitySet activities,
 			pSequenceCommandHandler handler) noexcept(false);
-//Fixed for exception handling in the C++20 version.
+
 	 /**
 	 * Special constructor for the Apply Sequence Command Consumer.
 	 * The arguments specify the prefix and the
@@ -172,7 +172,7 @@ private:
 	SequenceCommandConsumer(const std::string & prefix,
 			command::ActivitySet activities,
 			pSequenceCommandHandler handler) noexcept(false);
-//Fixed for exception handling in the C++20 version.
+
 	/**
 	 * Takes care of the initialization of a SequenceCommandConsumer
 	 * using the given topic and set of activities. Associates the consumer
@@ -187,7 +187,7 @@ private:
 	 */
 	void init(const std::string & topic, command::ActivitySet activities,
 			pSequenceCommandHandler handler) noexcept(false);
-//Fixed for exception handling in the C++20 version.
+
 	/**
 	 * Logging facility
 	 */

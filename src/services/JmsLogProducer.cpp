@@ -7,7 +7,7 @@ using namespace gmp;
 namespace giapi {
 
 JmsLogProducer::JmsLogProducer() noexcept(false) :
-//Fixed for exception handling in the C++20 version.
+
 	JmsProducer(GMPKeys::GMP_SERVICES_LOG_DESTINATION) {
 }
 
@@ -15,14 +15,14 @@ JmsLogProducer::~JmsLogProducer() {
 }
 
 pJmsLogProducer JmsLogProducer::create() noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	pJmsLogProducer producer(new JmsLogProducer());
 	return producer;
 }
 
 void JmsLogProducer::postLog(log::Level level, const std::string &logMsg)
 		noexcept(false) {
-			//Fixed for exception handling in the C++20 version.
+			
 
 	TextMessage * msg = NULL;
 	try {

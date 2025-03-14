@@ -24,7 +24,7 @@ namespace giapi {
          namespace jms {
 
             JmsApplyOffset::JmsApplyOffset() noexcept(false):
-            //Fixed for exception handling in the C++20 version.
+            
                                             JmsProducer(GMPKeys::GMP_TCS_OFFSET_DESTINATION) {
 	       instName = giapi::util::PropertiesUtil::Instance().getProperty("gmp.instrument");
 	       if(giapi::util::StringUtil::isEmpty(instName)) {
@@ -71,7 +71,7 @@ namespace giapi {
 
 
             pTcsOffset JmsApplyOffset::create()  noexcept(false) {
-               //Fixed for exception handling in the C++20 version.
+               
                pTcsOffset tcsOffset(new JmsApplyOffset());
                return tcsOffset;
             }
@@ -79,7 +79,7 @@ namespace giapi {
             int JmsApplyOffset::sendOffset(const double p, const double q,
                                            const OffsetType offsetType, const long timeout,
 		                           void (*callbackOffset)(int, std::string)) noexcept(false) {
-                                    //Fixed for exception handling in the C++20 version.
+                                    
 
                BytesMessage * rMsg = NULL;
                int wasOffsetApplied = 0;
@@ -149,7 +149,7 @@ namespace giapi {
 			                   const double q,
 	              			   const OffsetType offsetType, 
 					   const long timeout) noexcept(false) {
-                     //Fixed for exception handling in the C++20 version.
+                     
                return sendOffset(p, q, offsetType, timeout, NULL);
             }
 

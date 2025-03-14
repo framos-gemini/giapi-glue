@@ -9,7 +9,7 @@ namespace giapi {
 using namespace util;
 
 JmsFileEventsProducer::JmsFileEventsProducer() noexcept(false) :
-//Fixed for exception handling in the C++20 version.
+
 	JmsProducer(GMPKeys::GMP_DATA_FILEEVENT_DESTINATION) {
 }
 
@@ -18,14 +18,14 @@ JmsFileEventsProducer::~JmsFileEventsProducer() {
 
 pJmsFileEventsProducer JmsFileEventsProducer::create()
 		noexcept(false) {
-			//Fixed for exception handling in the C++20 version.
+			
 	pJmsFileEventsProducer producer(new JmsFileEventsProducer());
 	return producer;
 }
 
 int JmsFileEventsProducer::postAncillaryFileEvent(const std::string & filename,
 		const std::string & dataLabel) noexcept(false) {
-			//Fixed for exception handling in the C++20 version.
+			
 
 	/* Sends an Ancillary File event with the given parameters */
 	return sendFileEventMessage(ANCILLARY_TYPE, filename, dataLabel);
@@ -35,7 +35,7 @@ int JmsFileEventsProducer::postAncillaryFileEvent(const std::string & filename,
 int JmsFileEventsProducer::postIntermediateFileEvent(
 		const std::string & filename, const std::string & dataLabel,
 		const std::string &hint) noexcept(false) {
-			//Fixed for exception handling in the C++20 version.
+			
 	/* Sends an Intermediate File event with the given parameters */
 	return sendFileEventMessage(INTERMEDIATE_TYPE, filename, dataLabel, hint);
 }

@@ -18,7 +18,7 @@ log4cxx::LoggerPtr JmsProducer::logger(log4cxx::Logger::getLogger(
 
 
 JmsProducer::JmsProducer(const std::string& queueName) noexcept(false){
-//Fixed for exception handling in the C++20 version.
+
 
 	try {
 		_connectionManager = ConnectionManager::Instance();

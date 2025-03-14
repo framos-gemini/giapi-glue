@@ -58,7 +58,7 @@ type::Type EpicsStatusItemImpl::getType() const {
 
 const std::string  EpicsStatusItemImpl::getDataAsString(int index) const
 		noexcept(false) {
-			//Fixed for exception handling in the C++20 version.
+			
 
 	if (_type != type::STRING)
 		throw InvalidOperation("EPICS status item does not contain string data");
@@ -74,7 +74,7 @@ const std::string  EpicsStatusItemImpl::getDataAsString(int index) const
 }
 
 int EpicsStatusItemImpl::getDataAsInt(int index) const noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	if (_type != type::INT)
 		throw InvalidOperation("EPICS status item does not contain integer data");
 
@@ -85,7 +85,7 @@ int EpicsStatusItemImpl::getDataAsInt(int index) const noexcept(false) {
 }
 
 float EpicsStatusItemImpl::getDataAsFloat(int index) const noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	if (_type != type::FLOAT)
 		throw InvalidOperation("EPICS status item does not contain float data");
 
@@ -96,7 +96,7 @@ float EpicsStatusItemImpl::getDataAsFloat(int index) const noexcept(false) {
 }
 
 double EpicsStatusItemImpl::getDataAsDouble(int index) const noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	if (_type != type::DOUBLE)
 		throw InvalidOperation("EPICS status item does not contain double data");
 
@@ -107,7 +107,7 @@ double EpicsStatusItemImpl::getDataAsDouble(int index) const noexcept(false) {
 }
 
 unsigned char EpicsStatusItemImpl::getDataAsByte(int index) const noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	if (_type != type::BYTE)
 		throw InvalidOperation("EPICS status item does not contain byte data");
 
@@ -122,7 +122,7 @@ unsigned char EpicsStatusItemImpl::getDataAsByte(int index) const noexcept(false
 
 
 void EpicsStatusItemImpl::validateIndex(int index) const noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	if (index >= _nElements || index < 0)
 		throw InvalidOperation("Index out of range to get element from EPICS status item");
 }

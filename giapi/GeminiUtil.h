@@ -1,6 +1,7 @@
 #ifndef GEMINIINTERACTIONUTIL_H_
 #define GEMINIINTERACTIONUTIL_H_
 #include <string>
+#include <vector>
 
 #include <giapi/EpicsStatusHandler.h>
 #include <giapi/giapi.h>
@@ -11,6 +12,19 @@
 
 
 namespace giapi {
+/**
+ * Structure to hold FITS file data
+ */
+struct FitsData {
+    std::vector<unsigned char> data;  // The FITS file data
+    
+    FitsData() {}
+    
+    FitsData(const unsigned char* rawData, size_t size) {
+        data.assign(rawData, rawData + size);
+    }
+};
+
 /**
  * Provides the mechanisms for the instrument to interact with other
  * Gemini Principal Systems.
@@ -148,6 +162,92 @@ public:
 	 *         or a timeout occurs.
 	 */
 	static pEpicsStatusItem getChannel(const std::string &name, long timeout) noexcept(false);
+
+	/**
+	 * Sends a FITS file through the GMP messaging system.
+	 * 
+	 * @param fitsFileName Path to the FITS file to be sent
+	 * @param timeout time in milliseconds to wait for the file transfer to complete.
+	 *        If not specified, the call will block until the GMP replies back.
+	 *
+	 * @return status::OK if the file was sent successfully,
+	 *         status::ERROR if there was an error during the transfer
+	 *
+	 * @throws GiapiException if there is an error accessing the GMP to
+	 *         send the file, or a timeout occurs.
+	 */
+	static int sendFitsFile(const std::string& fitsFileName, const long timeout) noexcept(false);
+
+	/**
+	 * Sends a FITS file through the GMP messaging system with asynchronous callback.
+	 * 
+	 * @param fitsFileName Path to the FITS file to be sent
+	 * @param timeout time in milliseconds to wait for the file transfer to complete
+	 * @param callback Function to be called after the file transfer completes
+	 *        The callback receives a status code and a message string
+	 *
+	 * @return status::OK if the file transfer was initiated successfully,
+	 *         status::ERROR if there was an error initiating the transfer
+	 *
+	 * @throws GiapiException if there is an error accessing the GMP to
+	 *         send the file
+	 */
+	static int sendFitsFile(const std::string& fitsFileName, 
+                           const long timeout,
+                           void (*callback)(int, std::string)) noexcept(false);
+
+        /**
+         * Start receiving FITS files through the GMP messaging system.
+         * When a FITS file is received, the callback function will be called.
+         * 
+         * @param callback Function to be called when a FITS file is received.
+         *        The callback receives a FitsData structure containing the file data
+         * 
+         * @return status::OK if the receiver was started successfully,
+         *         status::ERROR if there was a problem starting the receiver
+         * 
+         * @throws GiapiException if there is an error accessing the GMP to
+         *         start receiving files
+         */
+        static int receiveFitsFiles(void (*callback)(const FitsData&)) noexcept(false);
+
+        /**
+         * Stop receiving FITS files.
+         */
+        static void stopReceivingFitsFiles();
+
+        /**
+         * Sends FITS data through the GMP messaging system.
+         * 
+         * @param fitsData The FITS data to be sent
+         * @param timeout time in milliseconds to wait for the data transfer to complete.
+         *        If not specified, the call will block until the GMP replies back.
+         *
+         * @return status::OK if the data was sent successfully,
+         *         status::ERROR if there was an error during the transfer
+         *
+         * @throws GiapiException if there is an error accessing the GMP to
+         *         send the data, or a timeout occurs.
+         */
+        static int sendFitsData(const FitsData& fitsData, const long timeout) noexcept(false);
+
+        /**
+         * Sends FITS data through the GMP messaging system with asynchronous callback.
+         * 
+         * @param fitsData The FITS data to be sent
+         * @param timeout time in milliseconds to wait for the data transfer to complete
+         * @param callback Function to be called after the data transfer completes
+         *        The callback receives a status code and a message string
+         *
+         * @return status::OK if the data transfer was initiated successfully,
+         *         status::ERROR if there was an error initiating the transfer
+         *
+         * @throws GiapiException if there is an error accessing the GMP to
+         *         send the data
+         */
+        static int sendFitsData(const FitsData& fitsData, 
+                              const long timeout,
+                              void (*callback)(int, std::string)) noexcept(false);
 
 private:
 	GeminiUtil();

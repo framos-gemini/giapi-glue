@@ -11,7 +11,7 @@ log4cxx::LoggerPtr JmsEpicsManager::logger(log4cxx::Logger::getLogger(
 		"giapi::gemini::JmsEpicsManager"));
 
 JmsEpicsManager::JmsEpicsManager() noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	try {
 		_connectionManager = ConnectionManager::Instance();
 		//create an auto-acknowledged session
@@ -50,14 +50,14 @@ JmsEpicsManager::~JmsEpicsManager() {
 }
 
 pEpicsManager JmsEpicsManager::create() noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	pEpicsManager mgr(new JmsEpicsManager());
 	return mgr;
 }
 
 int JmsEpicsManager::subscribeEpicsStatus(const std::string & name,
 		pEpicsStatusHandler handler) noexcept(false) {
-			//Fixed for exception handling in the C++20 version.
+			
 
 	if (!(_epicsConfiguration->isInitialized())) {
 		//attempt to initialize it
@@ -79,7 +79,7 @@ int JmsEpicsManager::subscribeEpicsStatus(const std::string & name,
 
 int JmsEpicsManager::unsubscribeEpicsStatus(const std::string & name)
 		noexcept(false) {
-//Fixed for exception handling in the C++20 version.
+
 	if (_epicsConfiguration->hasChannel(name)) {
 		_epicsConsumersMap.erase(name);
 		return status::OK;

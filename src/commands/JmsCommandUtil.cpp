@@ -10,7 +10,7 @@ log4cxx::LoggerPtr JmsCommandUtil::logger(log4cxx::Logger::getLogger("giapi.JmsC
 pJmsCommandUtil JmsCommandUtil::INSTANCE(static_cast<JmsCommandUtil *>(0));
 
 JmsCommandUtil::JmsCommandUtil() noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	_completionInfoProducer = gmp::CompletionInfoProducer::create();
 }
 
@@ -28,7 +28,7 @@ JmsCommandUtil::~JmsCommandUtil() {
 }
 
 pJmsCommandUtil JmsCommandUtil::Instance() noexcept(false){
-	//Fixed for exception handling in the C++20 version.
+	
 	if (INSTANCE.get() == 0) {
 		INSTANCE.reset(new JmsCommandUtil());
 	}
@@ -38,7 +38,7 @@ pJmsCommandUtil JmsCommandUtil::Instance() noexcept(false){
 int JmsCommandUtil::subscribeApply(const std::string & prefix,
 		command::ActivitySet activities,
 		pSequenceCommandHandler handler) noexcept(false){
-			//Fixed for exception handling in the C++20 version.
+			
 
 	if (LogCommandUtil::Instance()->subscribeApply(prefix, activities, handler)
 			!= giapi::status::ERROR) {
@@ -62,7 +62,7 @@ int JmsCommandUtil::subscribeApply(const std::string & prefix,
 int JmsCommandUtil::subscribeSequenceCommand(command::SequenceCommand id,
 		command::ActivitySet activities,
 		pSequenceCommandHandler handler) noexcept(false){
-			//Fixed for exception handling in the C++20 version.
+			
 
 	if (LogCommandUtil::Instance()->subscribeSequenceCommand(id, activities, handler)
 			!= giapi::status::ERROR) {
@@ -89,7 +89,7 @@ int JmsCommandUtil::subscribeSequenceCommand(command::SequenceCommand id,
 
 int JmsCommandUtil::postCompletionInfo(command::ActionId id,
 		pHandlerResponse response) noexcept(false){
-			//Fixed for exception handling in the C++20 version.
+			
 
 	if (LogCommandUtil::Instance()->postCompletionInfo(id, response) !=
 		giapi::status::ERROR) {

@@ -1,14 +1,10 @@
--include src/gemini/epics/sources.mk
--include src/gemini/pcs/sources.mk
--include src/gemini/tcs/sources.mk
--include src/gemini/fitsFileImage/sources.mk
 # Add inputs and outputs from these tool invocations to the build variables 
-OBJS += $(patsubst %.cpp,%.o,$(wildcard ./src/gemini/*.cpp))
+OBJS += $(patsubst %.cpp,%.o,$(wildcard ./src/gemini/fitsFileImage/jms/*.cpp))
 
-CPP_DEPS += $(patsubst %.cpp,%.d,$(wildcard ./src/gemini/*.cpp))
+CPP_DEPS += $(patsubst %.cpp,%.d,$(wildcard ./src/gemini/fitsFileImage/jms/*.cpp))
 
 # Each subdirectory must supply rules for building sources it contributes
-src/gemini/%.o: ../src/gemini/%.cpp
+src/gemini/fitsFileImage/jms/%.o: ../src/gemini/fitsFileImage/jms/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking $(OS) C++ Compiler'
 	$(CXX) $(INC_DIRS) -std=c++14 -Wall -c -fmessage-length=0 -MMD -MP -MF"../$(@:%.o=%.d)" -MT"../$(@:%.o=%.d)" -o"../$@" "$<"

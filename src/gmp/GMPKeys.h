@@ -106,6 +106,9 @@ public:
 	const static std::string GMP_DATA_FILEEVENT_DATALABEL;
 	const static std::string GMP_DATA_FILEEVENT_HINT;
 
+    //Gemini Service Key - FITS File Transfer
+    const static std::string GMP_FITS_DESTINATION;
+
 	virtual ~GMPKeys();
 
 private:

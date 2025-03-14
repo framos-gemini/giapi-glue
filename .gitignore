@@ -43,3 +43,6 @@ src/examples/InstrumentDummyPython/src_py/__pycache__/
 src/examples/InstrumentDummyPython/src_py/gmp.properties
 src/examples/InstrumentDummyPython/src_py/images/
 src/examples/InstrumentDummyPython/src_py/log4cxx.properties
+compile_commands.json
+src/examples/fits_receiver
+src/examples/fits_sender

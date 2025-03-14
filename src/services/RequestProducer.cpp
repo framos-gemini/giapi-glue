@@ -15,7 +15,7 @@ log4cxx::LoggerPtr RequestProducer::logger(log4cxx::Logger::getLogger(
 		"giapi.RequestProducer"));
 
 RequestProducer::RequestProducer() noexcept(false){
-	//Fixed for exception handling in the C++20 version.
+	
 	try {
 		_connectionManager = ConnectionManager::Instance();
 		//create an auto-acknowledged session
@@ -42,7 +42,7 @@ RequestProducer::~RequestProducer() {
 }
 
 pRequestProducer RequestProducer::create() noexcept(false){
-	//Fixed for exception handling in the C++20 version.
+	
 	pRequestProducer producer(new RequestProducer());
 	return producer;
 }
@@ -66,7 +66,7 @@ void RequestProducer::cleanup() {
 
 std::string RequestProducer::getProperty(const std::string &key, long timeout)
 		noexcept(false){
-		//Fixed for exception handling in the C++20 version.
+		
 
 	//prepare a message to the GMP, requesting the property
 

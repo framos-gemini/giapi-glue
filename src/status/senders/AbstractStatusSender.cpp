@@ -21,7 +21,7 @@ AbstractStatusSender::~AbstractStatusSender() {
 
 int AbstractStatusSender::postStatus(const std::string &name) const
 		noexcept(false) {
-		//Fixed for exception handling in the C++20 version.
+		
 
 	pStatusItem statusItem = StatusDatabase::Instance()->getStatusItem(name);
 
@@ -43,7 +43,7 @@ int AbstractStatusSender::postStatus(pStatusItem item) const noexcept(false) {
 }
 
 int AbstractStatusSender::postStatus() const noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	//get the status items
 	const std::vector<pStatusItem> items =
 			StatusDatabase::Instance()->getStatusItems();
@@ -58,7 +58,7 @@ int AbstractStatusSender::postStatus() const noexcept(false) {
 
 
 int AbstractStatusSender::doPost(pStatusItem statusItem) const noexcept(false) {
-	//Fixed for exception handling in the C++20 version.
+	
 	if (statusItem.get() == 0)
 		return giapi::status::ERROR;
 

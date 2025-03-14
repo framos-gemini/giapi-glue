@@ -13,7 +13,7 @@ log4cxx::LoggerPtr EpicsConsumer::logger(log4cxx::Logger::getLogger(
 
 EpicsConsumer::EpicsConsumer(const std::string &channelName,
 		pEpicsStatusHandler handler) noexcept(false){
-			//Fixed for exception handling in the C++20 version.
+			
 	_handler = handler;
 	_channelName = channelName;
 	try {
@@ -44,7 +44,7 @@ EpicsConsumer::EpicsConsumer(const std::string &channelName,
 
 pEpicsConsumer EpicsConsumer::create(const std::string &channelName,
 		pEpicsStatusHandler handler) noexcept(false){
-			//Fixed for exception handling in the C++20 version.
+			
 
 	pEpicsConsumer consumer(new EpicsConsumer(channelName, handler));
 	return consumer;
@@ -52,7 +52,7 @@ pEpicsConsumer EpicsConsumer::create(const std::string &channelName,
 }
 
 EpicsConsumer::~EpicsConsumer() noexcept{
-//Fixed for exception handling in the C++20 version.
+
 	LOG4CXX_DEBUG(logger, "Destroying EPICS Consumer for channel " << _channelName);
 	cleanup();
 }
@@ -82,7 +82,7 @@ void EpicsConsumer::cleanup() {
 }
 
 void EpicsConsumer::onMessage(const cms::Message * message) noexcept(false){
-//Fixed for exception handling in the C++20 version.
+
 
 	const BytesMessage* bytesMessage =
 			dynamic_cast< const BytesMessage* >( message );

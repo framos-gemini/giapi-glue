@@ -76,6 +76,8 @@ const std::string GMPKeys::GMP_DATA_FILEEVENT_FILENAME = "FILENAME";
 const std::string GMPKeys::GMP_DATA_FILEEVENT_DATALABEL = "DATALABEL";
 const std::string GMPKeys::GMP_DATA_FILEEVENT_HINT = "HINT";
 
+const std::string GMPKeys::GMP_FITS_DESTINATION = GMP_PREFIX + GMP_SEPARATOR + "FITS_DESTINATION";
+
 GMPKeys::GMPKeys() {
 }
 

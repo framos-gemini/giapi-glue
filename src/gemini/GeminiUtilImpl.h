@@ -10,6 +10,8 @@
 #include <gemini/pcs/PcsUpdater.h>
 #include <gemini/tcs/TcsFetcher.h>
 #include "tcs/ApplyOffset.h"
+#include <gemini/fitsFileImage/jms/JmsFitsSender.h>
+#include <gemini/fitsFileImage/jms/JmsFitsReceiver.h>
 
 #include <stdexcept>
 //Required for exception handling
@@ -79,6 +81,36 @@ public:
  	*/
 	pEpicsStatusItem getChannel(const std::string &name, long timeout) noexcept(false);
 
+        /**
+         * @throw GiapiException
+         * If there is an error starting the FITS receiver,
+         *        possibly due to connection issues.
+         */
+        int receiveFitsFiles(void (*callback)(const FitsData&)) const noexcept(false);
+
+        /**
+         * Stop receiving FITS files.
+         */
+        void stopReceivingFitsFiles() const;
+
+        /**
+         * @throw GiapiException
+         * If there is an error sending the FITS data,
+         *        possibly due to a timeout or connection failure.
+         */
+        int sendFitsData(const FitsData& fitsData, const long timeout) const noexcept(false);
+
+        /**
+         * @throw GiapiException
+         * If there is an error initiating the FITS data transfer,
+         *        possibly due to connection issues.
+         */
+        int sendFitsData(const FitsData& fitsData, 
+                        const long timeout,
+                        void (*callback)(int, std::string)) const noexcept(false);
+
+		
+
 	virtual ~GeminiUtilImpl();
 private:
 	static pGeminiUtilImpl INSTANCE;
@@ -106,8 +138,18 @@ private:
 	gemini::epics::pEpicsFetcher _epicsFetcher;
 
 	/**
+	 * The FITS file sender object
+	 */
+	std::shared_ptr<gemini::fitsFileImage::jms::JmsFitsSender> _fitsSender;
+
+        /**
+         * The FITS file receiver object
+         */
+        std::shared_ptr<gemini::fitsFileImage::jms::JmsFitsReceiver> _fitsReceiver;
+
+	/**
  	* @throw GiapiException
-	* EXPLICAR AQUI
+	* If there is an error initializing any of the required components
  	*/
 	GeminiUtilImpl() noexcept(false);
 

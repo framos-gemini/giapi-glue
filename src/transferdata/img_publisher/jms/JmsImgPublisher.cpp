@@ -45,6 +45,7 @@ namespace giapi {
 
                         //message->writeBytes(binaryData.data(), binaryData.size());
                         message->writeBytes(binaryData);
+                        message->setLongProperty("timestamp", static_cast<uint64_t>(std::chrono::system_clock::now().time_since_epoch().count()));
 
                         _producer->send(message.get());
 

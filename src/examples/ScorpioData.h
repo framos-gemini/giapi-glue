@@ -11,6 +11,8 @@ using namespace std::chrono;
 class ScorpioData {
 public:
 
+    ScorpioData (const std::string &label) : dataLabel(label) { }
+
     ScorpioData (const std::vector<unsigned char> &binaryData) {
         deserialize(binaryData);
     }

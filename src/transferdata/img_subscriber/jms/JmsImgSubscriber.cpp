@@ -1,7 +1,8 @@
 #include "JmsImgSubscriber.h"
 #include <gmp/GMPKeys.h>
 #include <iostream>
-
+#include <thread>
+#include <chrono>
 
 using namespace cms;
 
@@ -53,6 +54,28 @@ namespace giapi {
                     }
                 }
 
+                int JmsImgSubscriber::receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, u_int64_t)) noexcept(false) {
+                    if (_isReceiving) {
+                        std::cout << "Already receiving FITS files"<< std::endl;
+                        return status::ERROR;
+                    }
+    
+                    if (!callback) {
+                        std::cout << "Callback function cannot be null" << std::endl;
+                        return status::ERROR;
+                    }
+    
+                    try {
+                        _callbackWithTimestamp = callback;
+                        startConsumer();
+                        _isReceiving = true;
+                        std::cout<<"Started receiving FITS files"<<std::endl;
+                        return 0;  // Success
+                    } catch (const CMSException& e) {
+                        throw std::runtime_error("Error receiving image (callback mode): " + e.getMessage());
+                    }
+                }
+
                 void JmsImgSubscriber::stopReceive() {
                     if (!_isReceiving) {
                         return;
@@ -69,12 +92,13 @@ namespace giapi {
                 }
 
                 void JmsImgSubscriber::onMessage(const Message* message) {
-                    if (!_isReceiving || !_callback) {
+                    if (!_isReceiving || (!_callback) && (!_callbackWithTimestamp))  {
                         return;
                     }
     
                     try {
                         const BytesMessage* bytesMessage = dynamic_cast<const BytesMessage*>(message);
+                        uint64_t receivedTimestamp = static_cast<uint64_t>(std::chrono::system_clock::now().time_since_epoch().count()); // nanoseconds
                         if (bytesMessage == nullptr) {
                             std::cout<<"Received message is not a BytesMessage"<<std::endl;
                             return;
@@ -83,9 +107,23 @@ namespace giapi {
                         // Get the message body size and data
                         const int size = bytesMessage->getBodyLength();
                         std::vector<unsigned char> buffer(size);
-                        bytesMessage->readBytes(buffer.data(), size);                        
-                        _callback(buffer);
-                       std::cout<< "Successfully processed FITS file" << std::endl;
+                        bytesMessage->readBytes(buffer.data(), size);    
+                        uint64_t tsDelay = (_callbackWithTimestamp) ? (receivedTimestamp - bytesMessage->getLongProperty("timestamp")) / 1000 : 0; 
+
+                        
+                        // Process the message asynchronously
+                        //std::thread([this, buffer]() {
+                        //    _callback(buffer);
+                        //}).detach();   
+                        std::thread([this, buffer, tsDelay]() {
+                            if (_callback)                 
+                                _callback(buffer);
+                            else {
+                                _callbackWithTimestamp(buffer,tsDelay ); //microseconds
+                                //std::cout<< "Successfully processed FITS file. Message latency: " << (receivedTimestamp - sentTimestamp) / 1000 << std::endl;
+                            }
+                        }).detach();   
+                       
     
                     } catch (const CMSException& e) {
                         std::cout<< "Error processing received FITS message: " << e.what() << std::endl;

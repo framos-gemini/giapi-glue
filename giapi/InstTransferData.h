@@ -22,6 +22,9 @@ namespace giapi {
          */
         static int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&)) noexcept(false);
 
+        static int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, uint64_t)) noexcept(false);
+
+
         /**
          * @brief Sends an image to the specified detector.
          *

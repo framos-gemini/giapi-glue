@@ -11,8 +11,9 @@
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include <thread>
 
-#define NUM_ITERATIONS 500
+#define NUM_ITERATIONS 10
 
 // Structure to hold timing data
 struct PerfData {
@@ -61,14 +62,14 @@ int sendFitsFile(const std::string& fitsPath, const std::string& detID, int it)
         uint64_t ts_startSer = ScorpioData::getCurrentTimestamp();
 
         // Create FitsData structure
-        ScorpioData fitsData(detID, ts_startSer);
+        ScorpioData fitsData(detID+"_"+std::to_string(it), ts_startSer);
         fitsData.data = buffer;
         std::vector<unsigned char> serializedData = fitsData.serialize();
         uint64_t ts_endSer = ScorpioData::getCurrentTimestamp();
         giapi::InstTransferData::sendImage(detID, serializedData, false);
         uint64_t ts_endTransfer = ScorpioData::getCurrentTimestamp();
         // Store results
-        perfResults.push_back({it, static_cast<uint64_t>(size), ts_startSer - ts_endSer, ts_endSer - ts_endTransfer});
+        perfResults.push_back({it, static_cast<uint64_t>(size), ts_endSer - ts_startSer , ts_endTransfer - ts_endSer});
 
     } catch (const giapi::GiapiException& e) {
         LOG4CXX_INFO(exampleLogger, "Error: " << e.what());
@@ -81,9 +82,9 @@ void saveResultsToFile(const std::string& filename) {
     std::ofstream outFile(filename);
     outFile << "Iteration,File Size (bytes),Serialize Time (ms),Send Latency (ms)\n";
     for (const auto& data : perfResults) {
-        outFile << data.iteration << "," 
-                << data.fileSize << ","
-                << data.serializeTime / 1000 << ","
+        outFile << data.iteration << ";" 
+                << data.fileSize << ";"
+                << data.serializeTime / 1000 << ";"
                 << data.sendTime / 1000 << "\n";
     }
     outFile.close();
@@ -99,8 +100,10 @@ int main(int argc, char* argv[]) {
     // Send both FITS files multiple times
     for (int i =0; i < NUM_ITERATIONS; i++) {
         sendFitsFile(argv[1], "detH1", i);
+        std::cout<<"Sending detH2" << std::endl;
         sendFitsFile(argv[2], "detH2", i);
     }
+    std::cout<<"#####################" << std::endl;
 
     // Save results to a CSV file
     saveResultsToFile("sender_performance.csv");

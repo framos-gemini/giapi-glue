@@ -37,6 +37,8 @@ namespace giapi {
 
                     int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&)) noexcept(false);
 
+                    int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, u_int64_t)) noexcept(false); 
+
                     /**
                         * Stops listening for FITS files
                         */
@@ -50,6 +52,7 @@ namespace giapi {
 
                 private:
                     void (*_callback)(const std::vector<unsigned char>&);
+                    void (*_callbackWithTimestamp)(const std::vector<unsigned char>&, u_int64_t);
                     bool _isReceiving;
                 };
 

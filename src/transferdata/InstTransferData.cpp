@@ -11,4 +11,8 @@ namespace giapi {
         return ImgTransferDataImpl::sendImage(detID, binaryData, blocking);
     }
 
+    int InstTransferData::receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, uint64_t)) noexcept(false) {
+        return ImgTransferDataImpl::receiveImage(detID, callback);
+    }
+
 } // namespace giapi

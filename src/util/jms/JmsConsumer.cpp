@@ -64,10 +64,13 @@ namespace jms {
         try {
             if (_consumer.get() != 0) {
                 _consumer->close();
+                _consumer.reset();
             }
             if (_session.get() != 0) {
                 _session->close();
+                _session.reset();
             }
+            
         } catch (const cms::CMSException& e) {
             LOG4CXX_ERROR(logger, "Error cleaning up JMS resources: " << e.what());
         }

@@ -2,6 +2,7 @@
 #define GIAPI_IMGTRANSFERDATAIMPL_H
 
 #include <string>
+#include <map>
 #include <functional>
 #include <memory>
 #include <log4cxx/logger.h>
@@ -26,6 +27,8 @@ namespace giapi {
          */
         static int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&)) noexcept(false);
 
+        static int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, uint64_t)) noexcept(false);
+
         /**
          * @brief Sends an image to the specified detector.
          * @param detID Detector ID.
@@ -36,8 +39,10 @@ namespace giapi {
         static int sendImage(const std::string& detID, const std::vector<unsigned char>& binaryData, bool blocking) noexcept(false);
     private:
         //transferdata::img_subscriber::pImgSubscriber _imgSubscriber;
-        static transferdata::img_publisher::pImgPublisher _imgPublisher;
-        static transferdata::img_subscriber::pImgSubscriber _imgSubscriber;
+        //static transferdata::img_publisher::pImgPublisher _imgPublisher;
+        //static transferdata::img_subscriber::pImgSubscriber _imgSubscriber;
+        static std::map<std::string, transferdata::img_subscriber::pImgSubscriber> _subscribers;
+        static std::map<std::string, transferdata::img_publisher::pImgPublisher> _publishers;
 
         /**
          * Logging facility

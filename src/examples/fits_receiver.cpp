@@ -91,7 +91,7 @@ void handleFitsData2(const std::vector<unsigned char>& binaryData, u_int64_t tsD
         uint64_t ts2 = ScorpioData::getCurrentTimestamp();
         uint64_t tsDeserialization = ts2 - tsReceived;
         LOG4CXX_DEBUG(exampleLogger, "Time spent in Deserialize: " << tsDeserialization / 1000   << " ms");
-        //createFitsFile(data);
+        createFitsFile(data);
         uint64_t ts3 = ScorpioData::getCurrentTimestamp();
         LOG4CXX_DEBUG(exampleLogger, "Successfully saved FITS file, Spent in saving the fits file: " << (ts3 - ts2) / 1000 << " ms");
         // Store results

@@ -5,6 +5,8 @@
 #include <sstream>
 #include <chrono>
 #include <sstream>
+#include <cstring>
+
 
 using namespace std::chrono;
 
@@ -26,35 +28,60 @@ public:
     std::vector<unsigned char> data;
 
     std::vector<unsigned char> serialize() const {
-        std::ostringstream stream;
+        std::vector<unsigned char> buffer;
+        size_t totalSize = sizeof(uint32_t) + dataLabel.size() + sizeof(timestamp) + sizeof(uint32_t) + data.size();
+        buffer.resize(totalSize);
 
+        size_t offset = 0;
+
+        // Serialize dataLabel size
         uint32_t labelSize = dataLabel.size();
+        std::memcpy(buffer.data() + offset, &labelSize, sizeof(labelSize));
+        offset += sizeof(labelSize);
+
+        // Serialize dataLabel
+        std::memcpy(buffer.data() + offset, dataLabel.data(), labelSize);
+        offset += labelSize;
+
+        // Serialize timestamp
+        std::memcpy(buffer.data() + offset, &timestamp, sizeof(timestamp));
+        offset += sizeof(timestamp);
+
+        // Serialize data size
         uint32_t dataSize = data.size();
+        std::memcpy(buffer.data() + offset, &dataSize, sizeof(dataSize));
+        offset += sizeof(dataSize);
 
-        stream.write(reinterpret_cast<const char *>(&labelSize), sizeof(labelSize));
-        stream.write(dataLabel.c_str(), labelSize);
-        stream.write(reinterpret_cast<const char *>(&timestamp), sizeof(timestamp));
-        stream.write(reinterpret_cast<const char *>(&dataSize), sizeof(dataSize));
-        stream.write(reinterpret_cast<const char *>(data.data()), dataSize);
+        // Serialize raw binary data
+        std::memcpy(buffer.data() + offset, data.data(), dataSize);
 
-        std::string binaryString = stream.str();
-        return std::vector<unsigned char>(binaryString.begin(), binaryString.end());
+        return buffer;
     }
     
     void deserialize(const std::vector<unsigned char> &binaryData) {
-        std::istringstream stream(std::string(binaryData.begin(), binaryData.end()));
+        size_t offset = 0;
 
-        uint32_t labelSize, dataSize;
-        stream.read(reinterpret_cast<char *>(&labelSize), sizeof(labelSize));
+        // Deserialize dataLabel size
+        uint32_t labelSize;
+        std::memcpy(&labelSize, binaryData.data() + offset, sizeof(labelSize));
+        offset += sizeof(labelSize);
 
-        dataLabel.resize(labelSize);
-        stream.read(&dataLabel[0], labelSize);
+        // Deserialize dataLabel
+        dataLabel.assign(reinterpret_cast<const char*>(binaryData.data() + offset), labelSize);
+        offset += labelSize;
 
-        stream.read(reinterpret_cast<char *>(&timestamp), sizeof(timestamp));
+        // Deserialize timestamp
+        std::memcpy(&timestamp, binaryData.data() + offset, sizeof(timestamp));
+        offset += sizeof(timestamp);
 
-        stream.read(reinterpret_cast<char *>(&dataSize), sizeof(dataSize));
+        // Deserialize data size
+        uint32_t dataSize;
+        std::memcpy(&dataSize, binaryData.data() + offset, sizeof(dataSize));
+        offset += sizeof(dataSize);
+
+        // Deserialize raw binary data
         data.resize(dataSize);
-        stream.read(reinterpret_cast<char *>(data.data()), dataSize);
+        std::memcpy(data.data(), binaryData.data() + offset, dataSize);
     }
 
     static uint64_t getCurrentTimestamp() {

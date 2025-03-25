@@ -44,12 +44,13 @@ namespace giapi {
                         auto message = std::unique_ptr<BytesMessage>(_session->createBytesMessage());
 
                         //message->writeBytes(binaryData.data(), binaryData.size());
+                        uint64_t t1 = static_cast<uint64_t>(std::chrono::system_clock::now().time_since_epoch().count());
                         message->writeBytes(binaryData);
                         message->setLongProperty("timestamp", static_cast<uint64_t>(std::chrono::system_clock::now().time_since_epoch().count()));
 
                         _producer->send(message.get());
-
-                        std::cout << "Image sent to detector: " << _detID << std::endl;
+                        uint64_t t2 = static_cast<uint64_t>(std::chrono::system_clock::now().time_since_epoch().count() - t1) / 1000000;
+                        std::cout << "########## Image sent to detector: " << _detID << " spent: " << t2 << " ms" <<std::endl;
 
                         // Blocking behavior: Wait for acknowledgment from subscriber
                         if (blocking) {

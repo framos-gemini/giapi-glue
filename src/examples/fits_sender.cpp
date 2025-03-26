@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
         uint64_t tsEnd = ScorpioData::getCurrentTimestamp();
 
         perfResults.push_back({selected.dataLabel, payload.size(), tsEndSerialization - tsStartSerialization, tsEnd - tsEndSerialization});
-        cout<< "Sent " << selected.dataLabel << " (" << payload.size() << " bytes)" 
+        cout<< "Msg: " << i << " dataLabel: " << selected.dataLabel << " (" << payload.size() << " bytes)" 
                      << "Serialization took: " << (tsEndSerialization - tsStartSerialization) / 1000 << " ms\n"<<endl;
     }
 

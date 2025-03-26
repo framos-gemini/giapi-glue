@@ -13,11 +13,11 @@
 #include <atomic>
 #include <filesystem>
 #include <cstring>
+#include <map>
 
 using namespace std;
 
-std::unique_ptr<ScorpioData> data_received;
-std::unique_ptr<ScorpioData> data_received2;
+map<string, unique_ptr<ScorpioData>> mapData;
 
 // Structure to hold performance data
 struct PerfData {
@@ -70,8 +70,9 @@ void handleFitsData(const std::vector<unsigned char>& binaryData, u_int64_t tsDe
         ScorpioData received(binaryData);
         uint64_t tsDeserialized = ScorpioData::getCurrentTimestamp();
         uint64_t deserTime = tsDeserialized - tsReceived;
-        if (!data_received && received.dataLabel == "detH1") data_received = std::make_unique<ScorpioData>(received);
-        if (!data_received2 && received.dataLabel == "detH2") data_received2 = std::make_unique<ScorpioData>(received);
+        if (!mapData.count(received.dataLabel))
+           mapData.insert({received.dataLabel, make_unique<ScorpioData>(received)});
+        
         cout << "Received data: " << received.dataLabel 
                                     << ", size = " << received.data.size() << ", net = " << tsDelayMessage/1000 << " ms" 
                                     << ", deser = " << deserTime / 1000 << " ms"<<endl;
@@ -84,13 +85,20 @@ void handleFitsData(const std::vector<unsigned char>& binaryData, u_int64_t tsDe
 
 int main(int argc, char* argv[]) {
     try {
+        string detName="detH";
+
+        if (argc != 2) {
+            std::cerr << "Usage: " << argv[0] << "<number of detector to subscriber>" << std::endl;
+            return 1;
+        }
         std::signal(SIGINT, signalHandler);
+        int numberDet = atoi(argv[1]);
 
         cout << "Starting FITS receiver..."<< endl;
 
-        std::vector<std::string> detectors = {"detH1", "detH2"};
         std::vector<std::thread> threads;
-        for (const auto& det : detectors) {
+        for (int i=0; i<numberDet; ++i) {
+            string det = detName+ std::to_string(i);
             threads.emplace_back([det]() {
                 giapi::InstTransferData::receiveImage(det, handleFitsData);
             });
@@ -114,14 +122,11 @@ int main(int argc, char* argv[]) {
         
         //writeToFile("scorpio_data1_received.bin", data_received->serialize());
         //writeToFile("scorpio_data2_received.bin", data_received2->serialize());
-        if (data_received) {
-            std::cout<<"Going to save scorpio_data1_received.txt" << std::endl;
-            data_received->saveToAsciiFile("/tmp/scorpio_data1_received.txt");
+        
+        for (auto it = mapData.begin(); it != mapData.end(); ++it) {
+            it->second->saveToAsciiFile("/tmp/"+it->second->dataLabel+"received.txt");           
         }
-        if (data_received2) {
-            std::cout<<"Going to save scorpio_data2_received.tx" << std::endl;
-            data_received2->saveToAsciiFile("/tmp/scorpio_data2_received.txt");
-        }
+        
 
     } catch (const giapi::GiapiException& e) {
         cout << "GiapiException: " << e.what()<< endl;

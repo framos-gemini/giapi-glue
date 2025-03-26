@@ -83,26 +83,41 @@ ScorpioData generateRandomScorpioData(const std::string& labelPrefix, int row, i
 }
 
 int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <num_messages>" << std::endl;
+    if (argc != 3) {
+        cout<<"Argc " << argc << endl;
+        std::cerr << "Usage: " << argv[0] << " <num_messages> <number of detectors>" << std::endl;
+        return 1;
+    }
+    int numMessages = -1;
+    int numDetectos = -1;
+
+    try{
+        numMessages = std::stoi(argv[1]);
+        numDetectos = std::stoi(argv[2]);
+    } catch (...) {
+        cerr << "The second and third parameters must be a number" << endl;
+        cerr << "Usage: " << argv[0] << " <num_messages> <det_name1> <det_name2>....<det_name9>" << endl;
         return 1;
     }
 
-    int numMessages = std::stoi(argv[1]);
+    vector<ScorpioData> vectData;
 
     cout<< "Preparing ScorpioData structures..."<<endl;
 
-    ScorpioData data1 = generateRandomScorpioData("detH1", 1024, 1024);
-    ScorpioData data2 = generateRandomScorpioData("detH2", 2048, 1024);
-
-    std::vector<unsigned char> buffer1 = data1.serialize();
-    std::vector<unsigned char> buffer2 = data2.serialize();
+    for (int i=0; i < numDetectos; ++i) {
+        ScorpioData dataTmp = (i%2 == 0) ? 
+                              generateRandomScorpioData("detH"+to_string(i), 1024, 1024) :
+                              generateRandomScorpioData("detH"+to_string(i), 2048, 1024);
+        dataTmp.dataSerialized = dataTmp.serialize();
+        cout<<"Created the " << dataTmp.dataLabel << " detector "<< endl;
+        vectData.push_back(dataTmp);
+    }
 
     cout<< "Starting FITS transmission loop..."<<endl;
 
     for (int i = 0; i < numMessages; ++i) {
-        bool isEven = (i % 2 == 0);
-        ScorpioData& selected = isEven ? data1 : data2;
+        int nDet = i % numDetectos;
+        ScorpioData& selected = vectData[nDet];
 
         std::ostringstream oss;
         //oss << (isEven ? "detH1" : "detH2") << "_" << (isEven ? i / 2 : i / 2);
@@ -112,7 +127,7 @@ int main(int argc, char* argv[]) {
         //selected.timestamp = tsStartSerialization;
         std::vector<unsigned char> payload = selected.serialize();
         uint64_t tsEndSerialization = ScorpioData::getCurrentTimestamp();
-        giapi::InstTransferData::sendImage(isEven ? "detH1" : "detH2", payload, false);
+        giapi::InstTransferData::sendImage(selected.dataLabel, payload, false);
         uint64_t tsEnd = ScorpioData::getCurrentTimestamp();
 
         perfResults.push_back({selected.dataLabel, payload.size(), tsEndSerialization - tsStartSerialization, tsEnd - tsEndSerialization});
@@ -127,8 +142,9 @@ int main(int argc, char* argv[]) {
     std::ostringstream filename;
     filename << "sender_performance_" << std::put_time(&local_tm, "%Y-%m-%d_%H-%M-%S") << ".csv";
     saveResultsToFile(filename.str());
-    data1.saveToAsciiFile("/tmp/scorpio_data1_sent.txt");
-    data2.saveToAsciiFile("/tmp/scorpio_data2_sent.txt");
+    for (auto it : vectData)
+        it.saveToAsciiFile("/tmp/"+it.dataLabel +"_sent.txt");
+    
     cout<< "All FITS messages sent successfully."<<endl;
     return 0;
 }

@@ -23,6 +23,7 @@ public:
     int _col;
     std::map<std::string, std::string> wcs;
     std::vector<float> data;  // 1024 x 1024 matrix (1D)
+    std::vector<unsigned char> dataSerialized;
 
   
 
@@ -82,7 +83,7 @@ public:
         out.close();
     }
 
-    std::vector<unsigned char> serialize() const {
+    std::vector<unsigned char> serialize() {
         // The serialization will be
         // <datalabel numBytes><dataLabel_bytes><timestamp_numBytes><wcs numBytes><key_numBytes><key_bytes><value_numBytes><value_bytes>.....<matrix_numBytes><matrix_bytes>
         size_t totalSize = sizeof(uint32_t) + dataLabel.size() +
@@ -121,7 +122,7 @@ public:
         }
     
         std::memcpy(buffer.data() + offset, data.data(), data.size() * sizeof(float));
-    
+   
         return buffer;
     }
 

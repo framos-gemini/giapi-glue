@@ -85,20 +85,32 @@ void handleFitsData(const std::vector<unsigned char>& binaryData, u_int64_t tsDe
 
 int main(int argc, char* argv[]) {
     try {
-        string detName="detH";
 
-        if (argc != 2) {
-            std::cerr << "Usage: " << argv[0] << "<number of detector to subscriber>" << std::endl;
+        if (argc < 2 || argc > 4) {
+            std::cerr << "Usage: " << argv[0] << "<number of detector to subscriber> [detector label to subscribe]" << std::endl;
+            std::cerr << "Usage2: " << argv[0] << "<detector label to subscribe>" << std::endl;
             return 1;
         }
         std::signal(SIGINT, signalHandler);
-        int numberDet = atoi(argv[1]);
-
-        cout << "Starting FITS receiver..."<< endl;
-
         std::vector<std::thread> threads;
+        int numberDet = 1;
+        string detName = "detH"; 
+	try{
+           numberDet = stoi(argv[1]);
+           if (argc == 3) 
+	      detName = argv[2]; 
+	   
+	}catch (...) {
+	   detName = argv[1];
+           numberDet = 1;
+	}
+
+        cout << "Starting FITS receiver, numDets: "<< numberDet << " detName: " << detName << endl;
+
         for (int i=0; i<numberDet; ++i) {
-            string det = detName+ std::to_string(i);
+	    string nDet = (numberDet == 1) ? "" : std::to_string(i);
+            string det = detName + nDet;
+            cout << "Subscribing to " << det << " data label" << endl;
             threads.emplace_back([det]() {
                 giapi::InstTransferData::receiveImage(det, handleFitsData);
             });

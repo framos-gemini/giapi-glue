@@ -83,31 +83,53 @@ ScorpioData generateRandomScorpioData(const std::string& labelPrefix, int row, i
 }
 
 int main(int argc, char* argv[]) {
-    if (argc != 3) {
+    if (argc > 7 || argc < 5) {
         cout<<"Argc " << argc << endl;
-        std::cerr << "Usage: " << argv[0] << " <num_messages> <number of detectors>" << std::endl;
+        std::cerr << "Usage1: " << argv[0] << " <num_messages> <number of detectors> <num data rows> <num data columns> [num data rows] [num data columns]" << std::endl;
+        std::cerr << "Usage2: " << argv[0] << " <num_messages> <detector label> <num data rows> <num data columns>" << std::endl;
         return 1;
     }
+    
     int numMessages = -1;
-    int numDetectos = -1;
+    int numDetectos = 1;
+    int numRows = -1;
+    int numCols = -1;
+    int numRows2 = -1;
+    int numCols2 = -1;
+    string detLabel = "detH";
 
     try{
         numMessages = std::stoi(argv[1]);
         numDetectos = std::stoi(argv[2]);
+        numRows2 = numRows = std::stoi(argv[3]);
+        numCols2 = numCols = std::stoi(argv[4]);
+	if (argc > 5) {
+           numRows2     = std::stoi(argv[5]);
+           numCols2     = std::stoi(argv[6]);
+	}
     } catch (...) {
-        cerr << "The second and third parameters must be a number" << endl;
-        cerr << "Usage: " << argv[0] << " <num_messages> <det_name1> <det_name2>....<det_name9>" << endl;
-        return 1;
+	try {
+	   detLabel = argv[2];
+           numRows2 = numRows = std::stoi(argv[3]);
+           numCols2 = numCols = std::stoi(argv[4]);
+        }catch (...) {
+
+           cerr << "The second to seventh parameters must be a number" << endl;
+           std::cerr << "Usage2: " << argv[0] << " <num_messages> <detector label> <num data rows> <num data columns>" << std::endl;
+           //std::cerr << "Usage: " << argv[0] << " <num_messages> <number of detectors> <num data rows> <num data columns> [num data rows] [num data columns]" << std::endl;
+           return 1;
+	}
     }
 
     vector<ScorpioData> vectData;
 
-    cout<< "Preparing ScorpioData structures..."<<endl;
+    cout<< "Preparing ScorpioData structures. Number of Detectos: "<< numDetectos << endl;
 
     for (int i=0; i < numDetectos; ++i) {
+	string dLabel = (numDetectos > 1) ? detLabel+to_string(i) : detLabel;
         ScorpioData dataTmp = (i%2 == 0) ? 
-                              generateRandomScorpioData("detH"+to_string(i), 1024, 1024) :
-                              generateRandomScorpioData("detH"+to_string(i), 2048, 1024);
+                              generateRandomScorpioData(dLabel, numRows, numCols) :
+                              generateRandomScorpioData(dLabel, numRows2, numCols2);
         dataTmp.dataSerialized = dataTmp.serialize();
         cout<<"Created the " << dataTmp.dataLabel << " detector "<< endl;
         vectData.push_back(dataTmp);

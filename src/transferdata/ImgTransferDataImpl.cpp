@@ -48,54 +48,52 @@ int ImgTransferDataImpl::sendImage(const std::string& detID, const std::vector<u
 /**
  * @brief Receives an image asynchronously via ImgSubscriber.
  */
-int ImgTransferDataImpl::receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&), const bool ack) noexcept(false) {
+void ImgTransferDataImpl::receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&), const bool ack){
     auto it = _subscribers.find(detID);
     LOG4CXX_DEBUG(logger, "Checking existing subscriptions for detector ID: " << detID);
     if (it != _subscribers.end()) {
         LOG4CXX_WARN(logger, "Subscription for " << detID << " already exists. Skipping duplicate subscription.");
-        return 0;  // Avoid creating a duplicate subscriber
+        throw GiapiException("You are already subscribed to this");  // Avoid creating a duplicate subscriber
     }
     try {
         LOG4CXX_INFO(logger, "Creating new subscription for detector ID: " << detID);
         auto subscriber = transferdata::img_subscriber::jms::JmsImgSubscriber::create(detID);
-        int error = subscriber->receiveImage(detID, callback, ack);
+        subscriber->receiveImage(detID, callback, ack);
         _subscribers.insert({detID, std::move(subscriber)});  // Store the subscriber
-        return error;
 
     } catch (const std::exception& e) {
         std::cerr << "Error in receiveImage (callback mode): " << e.what() << std::endl;
-        return -1;
+        throw e;
     }
 }
-int ImgTransferDataImpl::receiveImage(const std::string& detID, 
+void ImgTransferDataImpl::receiveImage(const std::string& detID, 
                                      void (*callback)(const std::vector<unsigned char>&, u_int64_t), 
-                                     const bool ack) noexcept(false) {
+                                     const bool ack) {
     auto it = _subscribers.find(detID);
     if (it != _subscribers.end()) {
         LOG4CXX_WARN(logger, "Subscription for " << detID << " already exists. Skipping duplicate subscription.");
-        return 0;  // Avoid creating a duplicate subscriber
+	throw GiapiException("You are already subscribed to this");  // Avoid creating a duplicate subscriber
     }
     try {
         LOG4CXX_INFO(logger, "Creating new subscription for detector ID: " << detID);
         auto subscriber = transferdata::img_subscriber::jms::JmsImgSubscriber::create(detID);
-        int error = subscriber->receiveImage(detID, callback, ack);
+        subscriber->receiveImage(detID, callback, ack);
         _subscribers.insert({detID, std::move(subscriber)});  // Store the subscriber
-        return error;
 
     } catch (const std::exception& e) {
         std::cerr << "Error in receiveImage (callback mode): " << e.what() << std::endl;
-        return -1;
+	throw e;
     }
 }
 
-int ImgTransferDataImpl::receiveImage(const std::string& detID,
+void ImgTransferDataImpl::receiveImage(const std::string& detID,
                                       void (*callback)(const std::vector<unsigned char>&)) noexcept(false) {
-    return receiveImage(detID, callback, false);
+    receiveImage(detID, callback, false);
 }
 
-int ImgTransferDataImpl::receiveImage(const std::string& detID,
+void ImgTransferDataImpl::receiveImage(const std::string& detID,
                                       void (*callback)(const std::vector<unsigned char>&, u_int64_t)) noexcept(false) {
-    return receiveImage(detID, callback, false);
+    receiveImage(detID, callback, false);
 }
 
 }

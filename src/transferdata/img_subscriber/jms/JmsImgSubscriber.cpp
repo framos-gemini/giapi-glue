@@ -63,17 +63,16 @@ namespace giapi {
                 /**
                 * @brief Receives an image asynchronously via a callback (no timestamp).
                 */
-                int JmsImgSubscriber::receiveImage(const std::string& detID, 
+                void JmsImgSubscriber::receiveImage(const std::string& detID, 
                                                    void (*callback)(const std::vector<unsigned char>&), 
-                                                   const bool ack) noexcept(false) {
+                                                   const bool ack) {
                     LOG4CXX_DEBUG(_logger, "Registering callback for receiving images from detector ID: " << detID);
                     try {
                         if (_checkReceiving(callback))
-                            return 0;
+                            throw GiapiException("Client not ready to receave data");
 
                         _callback = callback;
                         _initConsumer(detID, ack);
-                        return 0;  // Success
                     } catch (...) {
                         LOG4CXX_ERROR(_logger, "Error creating the consumer for the detector ID: " << detID);
                         throw;
@@ -86,15 +85,14 @@ namespace giapi {
                  *
                  * Timestamp is delivered as microseconds delay computed from message property.
                  */
-                int JmsImgSubscriber::receiveImage(const std::string& detID, 
+                void JmsImgSubscriber::receiveImage(const std::string& detID, 
                                                    void (*callback)(const std::vector<unsigned char>&, u_int64_t), 
-                                                   const bool ack) noexcept(false) {
+                                                   const bool ack) {
                     try {
                       if (_checkReceiving(callback))
-                         return 0;
+                         throw GiapiException("Client not ready to receave data");
                       _callbackWithTimestamp = callback;
                       _initConsumer(detID, ack);
-                      return 0;
                     }catch (...) {
 
                       throw;

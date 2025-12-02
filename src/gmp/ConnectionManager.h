@@ -82,8 +82,6 @@ public:
 
 	void registerHandler(pGiapiErrorHandler handler);
 
-        Connection* getConnection();
-
 	pConnection createDedicatedConnection();
        
 private:

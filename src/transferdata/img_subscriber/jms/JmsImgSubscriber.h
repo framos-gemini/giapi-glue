@@ -42,9 +42,9 @@ namespace giapi {
                      *
                      * This starts asynchronous reception; the callback runs on the JMS message thread.
                      */
-                    int receiveImage(const std::string& detID, 
+                    void receiveImage(const std::string& detID, 
                                     void (*callback)(const std::vector<unsigned char>&), 
-                                    const bool ack) noexcept(false);
+                                    const bool ack);
 
                     /**
                      * @brief Register a callback to receive image bytes and a timestamp.
@@ -55,9 +55,9 @@ namespace giapi {
                      *
                      * The timestamp argument is a u_int64_t representing the image time/metadata.
                      */
-                    int receiveImage(const std::string& detID, 
+                    void receiveImage(const std::string& detID, 
                                      void (*callback)(const std::vector<unsigned char>&, u_int64_t), 
-                                     const bool ack) noexcept(false);                   
+                                     const bool ack);                   
                     /**
                         * @brief Stops listening for messages and shuts down the consumer.
                         *

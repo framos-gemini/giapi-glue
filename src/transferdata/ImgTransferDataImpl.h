@@ -25,15 +25,15 @@ namespace giapi {
          * @param callback Function to handle received data.
          * @return Status code (0 for success, nonzero for failure).
          */
-        static int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&)) noexcept(false);
+        static void receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&));
 
         
         
-        static int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, uint64_t)) noexcept(false);
+        static void receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, uint64_t));
 
 
-        static int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&), const bool ack) noexcept(false);
-        static int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, uint64_t), const bool ack) noexcept(false);
+        static void receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&), const bool ack);
+        static void receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, uint64_t), const bool ack);
 
         /**
          * @brief Sends an image to the specified detector.

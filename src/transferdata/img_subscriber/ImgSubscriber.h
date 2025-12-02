@@ -26,7 +26,7 @@ namespace giapi {
                  * @return Status code (0 on success, non-zero on failure).
                  * @throws std::runtime_error on unrecoverable errors.
                  */
-                virtual int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&), const bool ack) noexcept(false)=0;
+                virtual void receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&), const bool ack)=0;
 
                 /**
                  * @brief Start asynchronous reception and provide a timestamp with the payload.
@@ -36,7 +36,7 @@ namespace giapi {
                  * @return Status code (0 on success, non-zero on failure).
                  * @throws std::runtime_error on unrecoverable errors.
                  */
-                virtual int receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, u_int64_t), const bool ack) noexcept(false) =0;
+                virtual void receiveImage(const std::string& detID, void (*callback)(const std::vector<unsigned char>&, u_int64_t), const bool ack) =0;
 
                 /**
                  * @brief Stop receiving messages and release any resources associated with reception.

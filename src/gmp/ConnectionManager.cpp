@@ -49,11 +49,6 @@ void ConnectionManager::registerHandler(pGiapiErrorHandler handler) {
 	_errorHandlerObjects.insert(handler);
 }
 
-Connection* ConnectionManager::getConnection() {
-    
-    return _connection.get();  // Assuming _connection is a pConnection (smart pointer)
-}
-
 
 std::string ConnectionManager::createUri() {
 	
